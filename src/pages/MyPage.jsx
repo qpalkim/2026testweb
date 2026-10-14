@@ -29,7 +29,9 @@ export function MyPage() {
         if (!isMounted) return;
 
         if (authError) {
-          setError("계정 정보를 불러오지 못했습니다. 잠시 후 다시 시도해 주세요.");
+          setError(
+            "계정 정보를 불러오지 못했습니다. 잠시 후 다시 시도해 주세요.",
+          );
           setIsLoading(false);
           return;
         }
@@ -159,16 +161,24 @@ export function MyPage() {
             </p>
           ) : (
             <div className="profile-editor">
-              <section className="profile-avatar-panel" aria-labelledby="profile-circle-title">
+              <section
+                className="profile-avatar-panel"
+                aria-labelledby="profile-circle-title"
+              >
                 <div className="profile-avatar-preview">
-                  <ProfileCircle name={displayName} className="profile-circle-large" />
+                  <ProfileCircle
+                    name={displayName}
+                    className="profile-circle-large"
+                  />
                 </div>
                 <div>
                   <p className="interior-eyebrow">YOUR PROFILE</p>
                   <h2 id="profile-circle-title">기본 프로필</h2>
                   <p>이름의 첫 글자가 원형 프로필에 표시됩니다.</p>
                   {user && (
-                    <span className={`profile-role-badge ${user.app_metadata?.role === "admin" ? "is-admin" : ""}`}>
+                    <span
+                      className={`profile-role-badge ${user.app_metadata?.role === "admin" ? "is-admin" : ""}`}
+                    >
                       {getUserRoleLabel(user)} 계정
                     </span>
                   )}

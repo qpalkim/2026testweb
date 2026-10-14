@@ -44,7 +44,11 @@ function FilePreview({ file, onRemove, index }) {
   return (
     <div className="notice-image-preview">
       {url && <img src={url} alt={`첨부 이미지 ${index + 1} 미리보기`} />}
-      <button type="button" onClick={onRemove} aria-label={`첨부 이미지 ${index + 1} 제거`}>
+      <button
+        type="button"
+        onClick={onRemove}
+        aria-label={`첨부 이미지 ${index + 1} 제거`}
+      >
         제거
       </button>
     </div>
@@ -74,7 +78,9 @@ export function NoticePage() {
 
     async function loadNotices() {
       if (!supabase) {
-        setError("공지사항을 불러올 수 없습니다. Supabase 설정을 확인해 주세요.");
+        setError(
+          "공지사항을 불러올 수 없습니다. Supabase 설정을 확인해 주세요.",
+        );
         setLoadFailed(true);
         setIsLoading(false);
         return;
@@ -102,7 +108,9 @@ export function NoticePage() {
       } catch {
         if (isMounted) {
           setLoadFailed(true);
-          setError("공지사항을 불러오지 못했습니다. 잠시 후 다시 시도해 주세요.");
+          setError(
+            "공지사항을 불러오지 못했습니다. 잠시 후 다시 시도해 주세요.",
+          );
         }
       } finally {
         if (isMounted) setIsLoading(false);
@@ -131,7 +139,11 @@ export function NoticePage() {
 
   function openEditForm(notice) {
     setEditingId(notice.id);
-    setForm({ title: notice.title, content: notice.content, is_pinned: notice.is_pinned });
+    setForm({
+      title: notice.title,
+      content: notice.content,
+      is_pinned: notice.is_pinned,
+    });
     resetImageSelection(notice.image_paths ?? []);
     setMessage("");
     setError("");
@@ -167,7 +179,10 @@ export function NoticePage() {
     if (validFiles.length > availableSlots) {
       validationMessage = "공지사항 이미지는 최대 3개까지 첨부할 수 있습니다.";
     }
-    setNewFiles((current) => [...current, ...validFiles.slice(0, Math.max(0, availableSlots))]);
+    setNewFiles((current) => [
+      ...current,
+      ...validFiles.slice(0, Math.max(0, availableSlots)),
+    ]);
     setError(validationMessage);
   }
 
@@ -184,7 +199,9 @@ export function NoticePage() {
       return;
     }
     if (!title || title.length > 160 || !content || content.length > 12000) {
-      setError("제목과 내용을 확인해 주세요. 제목은 160자, 내용은 12,000자까지 입력할 수 있습니다.");
+      setError(
+        "제목과 내용을 확인해 주세요. 제목은 160자, 내용은 12,000자까지 입력할 수 있습니다.",
+      );
       return;
     }
 
@@ -196,13 +213,22 @@ export function NoticePage() {
         const path = `notices/${crypto.randomUUID()}.${extension}`;
         const { error: uploadError } = await supabase.storage
           .from(BUCKET)
-          .upload(path, file, { contentType: file.type, cacheControl: "3600", upsert: false });
+          .upload(path, file, {
+            contentType: file.type,
+            cacheControl: "3600",
+            upsert: false,
+          });
         if (uploadError) throw uploadError;
         uploadedPaths.push(path);
       }
 
       const imagePaths = [...retainedImages, ...uploadedPaths];
-      const values = { title, content, is_pinned: form.is_pinned, image_paths: imagePaths };
+      const values = {
+        title,
+        content,
+        is_pinned: form.is_pinned,
+        image_paths: imagePaths,
+      };
       const query = editingId
         ? supabase.from("notices").update(values).eq("id", editingId)
         : supabase.from("notices").insert(values);
@@ -222,25 +248,34 @@ export function NoticePage() {
       setExpandedId(data.id);
       closeForm();
 
-      const removedPaths = (notices.find((notice) => notice.id === editingId)?.image_paths ?? [])
-        .filter((path) => !imagePaths.includes(path));
+      const removedPaths = (
+        notices.find((notice) => notice.id === editingId)?.image_paths ?? []
+      ).filter((path) => !imagePaths.includes(path));
       let cleanupFailed = false;
       if (removedPaths.length) {
         try {
-          const { error: cleanupError } = await supabase.storage.from(BUCKET).remove(removedPaths);
+          const { error: cleanupError } = await supabase.storage
+            .from(BUCKET)
+            .remove(removedPaths);
           cleanupFailed = Boolean(cleanupError);
         } catch {
           cleanupFailed = true;
         }
       }
-      setMessage(cleanupFailed
-        ? "공지사항은 저장했지만 제거한 이미지 일부를 정리하지 못했습니다."
-        : editingId ? "공지사항을 수정했습니다." : "공지사항을 등록했습니다.");
+      setMessage(
+        cleanupFailed
+          ? "공지사항은 저장했지만 제거한 이미지 일부를 정리하지 못했습니다."
+          : editingId
+            ? "공지사항을 수정했습니다."
+            : "공지사항을 등록했습니다.",
+      );
     } catch {
       if (uploadedPaths.length) {
         await supabase.storage.from(BUCKET).remove(uploadedPaths);
       }
-      setError("저장하지 못했습니다. 관리자 권한과 첨부 이미지 설정을 확인해 주세요.");
+      setError(
+        "저장하지 못했습니다. 관리자 권한과 첨부 이미지 설정을 확인해 주세요.",
+      );
     } finally {
       setIsSaving(false);
     }
@@ -263,14 +298,18 @@ export function NoticePage() {
       if (notice.image_paths?.length) {
         let cleanupFailed = false;
         try {
-          const { error: cleanupError } = await supabase.storage.from(BUCKET).remove(notice.image_paths);
+          const { error: cleanupError } = await supabase.storage
+            .from(BUCKET)
+            .remove(notice.image_paths);
           cleanupFailed = Boolean(cleanupError);
         } catch {
           cleanupFailed = true;
         }
-        setMessage(cleanupFailed
-          ? "공지사항은 삭제했지만 첨부 이미지 일부를 정리하지 못했습니다."
-          : "공지사항을 삭제했습니다.");
+        setMessage(
+          cleanupFailed
+            ? "공지사항은 삭제했지만 첨부 이미지 일부를 정리하지 못했습니다."
+            : "공지사항을 삭제했습니다.",
+        );
       } else {
         setMessage("공지사항을 삭제했습니다.");
       }
@@ -285,7 +324,13 @@ export function NoticePage() {
         eyebrow="LOCALIT NOTICE BOARD"
         number="05"
         total="05"
-        title={<>로컬릿의 소식,<br /><em>공지사항</em></>}
+        title={
+          <>
+            로컬릿의 소식,
+            <br />
+            <em>공지사항</em>
+          </>
+        }
         lead="서비스의 새로운 소식과 꼭 확인해야 할 안내를 전해드립니다."
       />
       <main className="interior-container interior-content notice-content">
@@ -295,11 +340,27 @@ export function NoticePage() {
             <h2>전체 공지</h2>
             <p>총 {notices.length}개의 소식</p>
           </div>
-          {isAdmin && <button className="interior-button" type="button" onClick={openCreateForm}>공지 작성</button>}
+          {isAdmin && (
+            <button
+              className="interior-button"
+              type="button"
+              onClick={openCreateForm}
+            >
+              공지 작성
+            </button>
+          )}
         </div>
 
-        {error && <p className="notice-feedback is-error" role="alert">{error}</p>}
-        {message && <p className="notice-feedback" role="status">{message}</p>}
+        {error && (
+          <p className="notice-feedback is-error" role="alert">
+            {error}
+          </p>
+        )}
+        {message && (
+          <p className="notice-feedback" role="status">
+            {message}
+          </p>
+        )}
 
         {isFormOpen && isAdmin && (
           <form className="notice-editor" onSubmit={handleSubmit}>
@@ -308,27 +369,58 @@ export function NoticePage() {
                 <p className="interior-eyebrow">ADMINISTRATOR</p>
                 <h2>{editingId ? "공지 수정" : "새 공지 작성"}</h2>
               </div>
-              <button className="notice-close-button" type="button" onClick={closeForm}>닫기</button>
+              <button
+                className="notice-close-button"
+                type="button"
+                onClick={closeForm}
+              >
+                닫기
+              </button>
             </div>
             <label>
               제목
-              <input value={form.title} onChange={(event) => setForm({ ...form, title: event.target.value })} maxLength={160} required />
+              <input
+                value={form.title}
+                onChange={(event) =>
+                  setForm({ ...form, title: event.target.value })
+                }
+                maxLength={160}
+                required
+              />
             </label>
             <label>
               내용
-              <textarea value={form.content} onChange={(event) => setForm({ ...form, content: event.target.value })} maxLength={12000} rows={8} required />
+              <textarea
+                value={form.content}
+                onChange={(event) =>
+                  setForm({ ...form, content: event.target.value })
+                }
+                maxLength={12000}
+                rows={8}
+                required
+              />
             </label>
-            <section className="notice-image-field" aria-labelledby="notice-image-label">
+            <section
+              className="notice-image-field"
+              aria-labelledby="notice-image-label"
+            >
               <div className="notice-image-field-heading">
                 <strong id="notice-image-label">이미지 첨부</strong>
-                <span>{retainedImages.length + newFiles.length}/{MAX_IMAGES} · 파일당 최대 5MB</span>
+                <span>
+                  {retainedImages.length + newFiles.length}/{MAX_IMAGES} ·
+                  파일당 최대 5MB
+                </span>
               </div>
               <div
                 className={`notice-dropzone${isDragging ? " is-dragging" : ""}`}
-                onDragEnter={(event) => { event.preventDefault(); setIsDragging(true); }}
+                onDragEnter={(event) => {
+                  event.preventDefault();
+                  setIsDragging(true);
+                }}
                 onDragOver={(event) => event.preventDefault()}
                 onDragLeave={(event) => {
-                  if (!event.currentTarget.contains(event.relatedTarget)) setIsDragging(false);
+                  if (!event.currentTarget.contains(event.relatedTarget))
+                    setIsDragging(false);
                 }}
                 onDrop={(event) => {
                   event.preventDefault();
@@ -338,7 +430,11 @@ export function NoticePage() {
               >
                 <span>이미지를 이곳에 끌어 놓으세요</span>
                 <span className="notice-dropzone-or">또는</span>
-                <button type="button" className="notice-close-button" onClick={() => fileInputRef.current?.click()}>
+                <button
+                  type="button"
+                  className="notice-close-button"
+                  onClick={() => fileInputRef.current?.click()}
+                >
                   파일 선택
                 </button>
                 <input
@@ -359,8 +455,21 @@ export function NoticePage() {
                 <div className="notice-image-previews">
                   {retainedImages.map((path, index) => (
                     <div className="notice-image-preview" key={path}>
-                      <img src={imageUrl(path)} alt={`첨부 이미지 ${index + 1} 미리보기`} />
-                      <button type="button" onClick={() => setRetainedImages((current) => current.filter((item) => item !== path))} aria-label={`첨부 이미지 ${index + 1} 제거`}>제거</button>
+                      <img
+                        src={imageUrl(path)}
+                        alt={`첨부 이미지 ${index + 1} 미리보기`}
+                      />
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setRetainedImages((current) =>
+                            current.filter((item) => item !== path),
+                          )
+                        }
+                        aria-label={`첨부 이미지 ${index + 1} 제거`}
+                      >
+                        제거
+                      </button>
                     </div>
                   ))}
                   {newFiles.map((file, index) => (
@@ -368,19 +477,39 @@ export function NoticePage() {
                       key={`${file.name}-${file.lastModified}-${index}`}
                       file={file}
                       index={retainedImages.length + index}
-                      onRemove={() => setNewFiles((current) => current.filter((_, fileIndex) => fileIndex !== index))}
+                      onRemove={() =>
+                        setNewFiles((current) =>
+                          current.filter((_, fileIndex) => fileIndex !== index),
+                        )
+                      }
                     />
                   ))}
                 </div>
               )}
             </section>
             <label className="notice-pin-control">
-              <input type="checkbox" checked={form.is_pinned} onChange={(event) => setForm({ ...form, is_pinned: event.target.checked })} />
+              <input
+                type="checkbox"
+                checked={form.is_pinned}
+                onChange={(event) =>
+                  setForm({ ...form, is_pinned: event.target.checked })
+                }
+              />
               상단에 고정
             </label>
             <div className="notice-editor-actions">
-              <button className="notice-close-button" type="button" onClick={closeForm}>취소</button>
-              <button className="interior-button" type="submit" disabled={isSaving}>
+              <button
+                className="notice-close-button"
+                type="button"
+                onClick={closeForm}
+              >
+                취소
+              </button>
+              <button
+                className="interior-button"
+                type="submit"
+                disabled={isSaving}
+              >
                 {isSaving ? "저장 중" : editingId ? "수정 저장" : "공지 등록"}
               </button>
             </div>
@@ -388,9 +517,15 @@ export function NoticePage() {
         )}
 
         {isLoading ? (
-          <p className="notice-empty" role="status">공지사항을 불러오는 중입니다.</p>
+          <p className="notice-empty" role="status">
+            공지사항을 불러오는 중입니다.
+          </p>
         ) : loadFailed ? null : notices.length === 0 ? (
-          <div className="notice-empty"><span aria-hidden="true">L</span><h3>등록된 공지사항이 없습니다.</h3><p>새로운 소식이 생기면 이곳에 안내해 드리겠습니다.</p></div>
+          <div className="notice-empty">
+            <span aria-hidden="true">L</span>
+            <h3>등록된 공지사항이 없습니다.</h3>
+            <p>새로운 소식이 생기면 이곳에 안내해 드리겠습니다.</p>
+          </div>
         ) : (
           <ol className="notice-list">
             {notices.map((notice, index) => {
@@ -399,14 +534,34 @@ export function NoticePage() {
               return (
                 <li key={notice.id} className={isExpanded ? "is-expanded" : ""}>
                   <article>
-                    <button className="notice-summary" type="button" aria-expanded={isExpanded} onClick={() => setExpandedId(isExpanded ? null : notice.id)}>
-                      <span className="notice-number">{String(index + 1).padStart(2, "0")}</span>
+                    <button
+                      className="notice-summary"
+                      type="button"
+                      aria-expanded={isExpanded}
+                      onClick={() =>
+                        setExpandedId(isExpanded ? null : notice.id)
+                      }
+                    >
+                      <span className="notice-number">
+                        {String(index + 1).padStart(2, "0")}
+                      </span>
                       <span className="notice-title-wrap">
-                        {notice.is_pinned && <span className="notice-pinned">중요</span>}
-                        {thumbnail && <img className="notice-thumbnail" src={imageUrl(thumbnail)} alt="" loading="lazy" />}
+                        {notice.is_pinned && (
+                          <span className="notice-pinned">중요</span>
+                        )}
+                        {thumbnail && (
+                          <img
+                            className="notice-thumbnail"
+                            src={imageUrl(thumbnail)}
+                            alt=""
+                            loading="lazy"
+                          />
+                        )}
                         <strong>{notice.title}</strong>
                       </span>
-                      <time dateTime={notice.created_at}>{formatDate(notice.created_at)}</time>
+                      <time dateTime={notice.created_at}>
+                        {formatDate(notice.created_at)}
+                      </time>
                       <span className="notice-toggle" aria-hidden="true" />
                     </button>
                     {isExpanded && (
@@ -415,11 +570,31 @@ export function NoticePage() {
                         {notice.image_paths?.length > 0 && (
                           <div className="notice-detail-images">
                             {notice.image_paths.map((path, imageIndex) => (
-                              <img key={path} src={imageUrl(path)} alt={`${notice.title} 첨부 이미지 ${imageIndex + 1}`} loading="lazy" />
+                              <img
+                                key={path}
+                                src={imageUrl(path)}
+                                alt={`${notice.title} 첨부 이미지 ${imageIndex + 1}`}
+                                loading="lazy"
+                              />
                             ))}
                           </div>
                         )}
-                        {isAdmin && <div className="notice-admin-actions"><button type="button" onClick={() => openEditForm(notice)}>수정</button><button type="button" onClick={() => handleDelete(notice)}>삭제</button></div>}
+                        {isAdmin && (
+                          <div className="notice-admin-actions">
+                            <button
+                              type="button"
+                              onClick={() => openEditForm(notice)}
+                            >
+                              수정
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => handleDelete(notice)}
+                            >
+                              삭제
+                            </button>
+                          </div>
+                        )}
                       </div>
                     )}
                   </article>

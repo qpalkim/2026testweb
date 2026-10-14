@@ -65,7 +65,10 @@ export function AccountActions({ active, variant = "interior" }) {
   return (
     <div className={`${variant}-account-links`}>
       {isLoading ? (
-        <span className="account-state-loading" aria-label="계정 상태 확인 중" />
+        <span
+          className="account-state-loading"
+          aria-label="계정 상태 확인 중"
+        />
       ) : user ? (
         <>
           <ProfileCircle name={accountName} className="profile-circle-header" />
@@ -79,21 +82,22 @@ export function AccountActions({ active, variant = "interior" }) {
           >
             마이페이지
           </a>
-          <button
-            type="button"
-            onClick={handleSignOut}
-            disabled={isSigningOut}
-          >
+          <button type="button" onClick={handleSignOut} disabled={isSigningOut}>
             {isSigningOut ? "로그아웃 중" : "로그아웃"}
           </button>
         </>
       ) : (
         <>
-          <a href="/login" aria-current={active === "login" ? "page" : undefined}>
+          <a
+            href="/login"
+            aria-current={active === "login" ? "page" : undefined}
+          >
             로그인
           </a>
           <a
-            className={variant === "home" ? "header-cta" : "interior-header-cta"}
+            className={
+              variant === "home" ? "header-cta" : "interior-header-cta"
+            }
             href="/signup"
             aria-current={active === "signup" ? "page" : undefined}
           >

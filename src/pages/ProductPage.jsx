@@ -1,5 +1,9 @@
-import { useMemo, useState } from 'react';
-import { Arrow, PageFrame, PageHeading } from '../components/site/InteriorLayout.jsx';
+import { useMemo, useState } from "react";
+import {
+  Arrow,
+  PageFrame,
+  PageHeading,
+} from "../components/site/InteriorLayout.jsx";
 
 const placeSamples = [
   {
@@ -27,7 +31,6 @@ const placeSamples = [
     color: "stone",
   },
 ];
-
 
 export function ProductPage() {
   const [category, setCategory] = useState("전체");

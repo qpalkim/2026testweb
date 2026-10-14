@@ -54,10 +54,12 @@ export async function ensureUserProfile(user, displayName) {
   ).slice(0, 50);
 
   try {
-    const { error } = await supabase.from("profiles").upsert(
-      { id: user.id, display_name: profileName },
-      { onConflict: "id", ignoreDuplicates: true },
-    );
+    const { error } = await supabase
+      .from("profiles")
+      .upsert(
+        { id: user.id, display_name: profileName },
+        { onConflict: "id", ignoreDuplicates: true },
+      );
 
     return error;
   } catch (error) {

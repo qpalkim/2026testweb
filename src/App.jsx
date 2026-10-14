@@ -72,7 +72,9 @@ let kakaoMapsPromise;
 
 function loadKakaoMaps(appKey) {
   if (window.kakao?.maps) {
-    return new Promise((resolve) => window.kakao.maps.load(() => resolve(window.kakao.maps)));
+    return new Promise((resolve) =>
+      window.kakao.maps.load(() => resolve(window.kakao.maps)),
+    );
   }
   if (kakaoMapsPromise) return kakaoMapsPromise;
 
@@ -134,9 +136,9 @@ function HomePage() {
         mapRef.current = map;
 
         const sampleLocations = [
-          { number: "01", lat: 37.5460, lng: 127.0546 },
+          { number: "01", lat: 37.546, lng: 127.0546 },
           { number: "02", lat: 37.5432, lng: 127.0574 },
-          { number: "03", lat: 37.5465, lng: 127.0580 },
+          { number: "03", lat: 37.5465, lng: 127.058 },
         ];
         sampleLocations.forEach(({ number, lat, lng }) => {
           const element = document.createElement("span");
@@ -152,7 +154,10 @@ function HomePage() {
 
         const currentCoordinates = locationCoordinatesRef.current;
         if (currentCoordinates) {
-          const position = new maps.LatLng(currentCoordinates.latitude, currentCoordinates.longitude);
+          const position = new maps.LatLng(
+            currentCoordinates.latitude,
+            currentCoordinates.longitude,
+          );
           const currentLocationElement = document.createElement("span");
           currentLocationElement.className = "kakao-current-location-marker";
           userMarkerRef.current = new maps.CustomOverlay({
@@ -250,7 +255,10 @@ function HomePage() {
     setMessage("현재 위치를 확인하고 있어요.");
     navigator.geolocation.getCurrentPosition(
       ({ coords }) => {
-        const coordinates = { latitude: coords.latitude, longitude: coords.longitude };
+        const coordinates = {
+          latitude: coords.latitude,
+          longitude: coords.longitude,
+        };
         locationCoordinatesRef.current = coordinates;
         setLocationCoordinates(coordinates);
         setLocation(
@@ -294,17 +302,23 @@ function HomePage() {
             </button>
           </div>
           <div className="hero-proof">
-            <span className="proof-marker" aria-hidden="true">L</span>
+            <span className="proof-marker" aria-hidden="true">
+              L
+            </span>
             <p>
               <strong>가까운 동네부터</strong> 새로운 장소를 발견해 보세요
             </p>
           </div>
         </div>
 
-        <div className="hero-visual" role="region" aria-label="성수동 주변 카카오 지도">
+        <div
+          className="hero-visual"
+          role="region"
+          aria-label="성수동 주변 카카오 지도"
+        >
           <div className="map-topline">
             <span className="map-live">
-            <i /> NEIGHBORHOOD PREVIEW
+              <i /> NEIGHBORHOOD PREVIEW
             </span>
             <button className="map-location" onClick={findMe}>
               <span className="target-icon">◎</span>
@@ -315,15 +329,21 @@ function HomePage() {
             {mapStatus !== "ready" && (
               <div className="map-status" role="status">
                 {mapStatus === "loading" && "지도를 불러오고 있습니다."}
-                {mapStatus === "missing-key" && "카카오 지도 키를 설정해 주세요."}
-                {mapStatus === "error" && "지도를 불러오지 못했습니다. 카카오 JavaScript 키와 등록 도메인을 확인해 주세요."}
+                {mapStatus === "missing-key" &&
+                  "카카오 지도 키를 설정해 주세요."}
+                {mapStatus === "error" &&
+                  "지도를 불러오지 못했습니다. 카카오 JavaScript 키와 등록 도메인을 확인해 주세요."}
               </div>
             )}
           </div>
           <div className="map-caption">
             <div>
               <span className="caption-kicker">위치 기반 탐색 미리보기</span>
-              <strong>{locationCoordinates ? "현재 위치 주변을 둘러보세요" : "성수동 주변을 둘러보세요"}</strong>
+              <strong>
+                {locationCoordinates
+                  ? "현재 위치 주변을 둘러보세요"
+                  : "성수동 주변을 둘러보세요"}
+              </strong>
             </div>
             <span className="map-scale">핀은 예시 위치입니다</span>
           </div>
@@ -446,44 +466,76 @@ function HomePage() {
         </div>
       </section>
 
-      <section className="recent-notices section-wrap" aria-labelledby="recent-notices-title">
+      <section
+        className="recent-notices section-wrap"
+        aria-labelledby="recent-notices-title"
+      >
         <div className="recent-notices-heading">
           <div>
             <p className="eyebrow">WHAT'S NEW</p>
-            <h2 id="recent-notices-title">로컬릿의 <em>새로운 소식.</em></h2>
+            <h2 id="recent-notices-title">
+              로컬릿의 <em>새로운 소식.</em>
+            </h2>
           </div>
           <a className="recent-notices-more" href="/notices">
             공지사항 전체 보기 <Arrow />
           </a>
         </div>
         {noticeStatus === "loading" ? (
-          <p className="recent-notices-state" role="status">새로운 소식을 불러오고 있습니다.</p>
+          <p className="recent-notices-state" role="status">
+            새로운 소식을 불러오고 있습니다.
+          </p>
         ) : noticeStatus === "error" ? (
           <p className="recent-notices-state" role="status">
-            공지사항을 불러오지 못했습니다. <a href="/notices">공지사항 페이지에서 확인해 주세요.</a>
+            공지사항을 불러오지 못했습니다.{" "}
+            <a href="/notices">공지사항 페이지에서 확인해 주세요.</a>
           </p>
         ) : recentNotices.length === 0 ? (
-          <p className="recent-notices-state">아직 등록된 공지사항이 없습니다.</p>
+          <p className="recent-notices-state">
+            아직 등록된 공지사항이 없습니다.
+          </p>
         ) : (
           <div className="recent-notice-grid">
             {recentNotices.map((notice, index) => {
               const thumbnail = notice.image_paths?.[0];
               return (
-                <a className="recent-notice-card" href="/notices" key={notice.id}>
+                <a
+                  className="recent-notice-card"
+                  href="/notices"
+                  key={notice.id}
+                >
                   <div className={`recent-notice-art notice-art-${index + 1}`}>
                     {thumbnail ? (
-                      <img src={supabase.storage.from("notice-images").getPublicUrl(thumbnail).data.publicUrl} alt="" loading="lazy" />
+                      <img
+                        src={
+                          supabase.storage
+                            .from("notice-images")
+                            .getPublicUrl(thumbnail).data.publicUrl
+                        }
+                        alt=""
+                        loading="lazy"
+                      />
                     ) : (
-                      <span aria-hidden="true">L<span>.</span></span>
+                      <span aria-hidden="true">
+                        L<span>.</span>
+                      </span>
                     )}
-                    {notice.is_pinned && <span className="recent-notice-pinned">중요 안내</span>}
-                    <span className="recent-notice-art-index">UPDATE · {String(index + 1).padStart(2, "0")}</span>
+                    {notice.is_pinned && (
+                      <span className="recent-notice-pinned">중요 안내</span>
+                    )}
+                    <span className="recent-notice-art-index">
+                      UPDATE · {String(index + 1).padStart(2, "0")}
+                    </span>
                   </div>
                   <div className="recent-notice-copy">
-                    <time dateTime={notice.created_at}>{formatNoticeDate(notice.created_at)}</time>
+                    <time dateTime={notice.created_at}>
+                      {formatNoticeDate(notice.created_at)}
+                    </time>
                     <h3>{notice.title}</h3>
                     <p>{notice.content}</p>
-                    <span className="recent-notice-link">자세히 보기 <Arrow diagonal /></span>
+                    <span className="recent-notice-link">
+                      자세히 보기 <Arrow diagonal />
+                    </span>
                   </div>
                 </a>
               );
@@ -524,20 +576,74 @@ function HomePage() {
         <div className="contact-inner section-wrap">
           <div className="contact-copy">
             <p className="eyebrow">LET'S TALK LOCAL</p>
-            <h2>동네에 대한 생각,<br /><em>로컬릿에 들려주세요.</em></h2>
-            <p>제휴 제안, 서비스 문의, 동네 이야기를 남겨주세요.<br />아래 양식은 현재 시안이며 문의가 실제로 전송되지는 않습니다.</p>
-            <span className="contact-note">실제 문의 접수는 전송 기능이 연결된 뒤 이용하실 수 있습니다.</span>
+            <h2>
+              동네에 대한 생각,
+              <br />
+              <em>로컬릿에 들려주세요.</em>
+            </h2>
+            <p>
+              제휴 제안, 서비스 문의, 동네 이야기를 남겨주세요.
+              <br />
+              아래 양식은 현재 시안이며 문의가 실제로 전송되지는 않습니다.
+            </p>
+            <span className="contact-note">
+              실제 문의 접수는 전송 기능이 연결된 뒤 이용하실 수 있습니다.
+            </span>
           </div>
-          <form className="inquiry-form" onSubmit={(event) => {
-            event.preventDefault();
-            setInquiryMessage("문의 내용을 작성했습니다. 실제 전송 기능은 아직 연결되지 않았습니다.");
-          }}>
-            <label>이름<input name="name" autoComplete="name" placeholder="성함을 입력해 주세요" required /></label>
-            <label>이메일<input name="email" type="email" autoComplete="email" placeholder="답변받을 이메일 주소" required /></label>
-            <label>문의 유형<select name="topic" defaultValue="제휴 문의"><option>제휴 문의</option><option>서비스 문의</option><option>동네 제보</option><option>기타</option></select></label>
-            <label>문의 내용<textarea name="message" rows="4" placeholder="궁금한 점이나 제안하고 싶은 내용을 적어주세요" required /></label>
-            <button className="button button-dark" type="submit">문의 내용 확인하기 <Arrow /></button>
-            {inquiryMessage && <p className="form-status" role="status">{inquiryMessage}</p>}
+          <form
+            className="inquiry-form"
+            onSubmit={(event) => {
+              event.preventDefault();
+              setInquiryMessage(
+                "문의 내용을 작성했습니다. 실제 전송 기능은 아직 연결되지 않았습니다.",
+              );
+            }}
+          >
+            <label>
+              이름
+              <input
+                name="name"
+                autoComplete="name"
+                placeholder="성함을 입력해 주세요"
+                required
+              />
+            </label>
+            <label>
+              이메일
+              <input
+                name="email"
+                type="email"
+                autoComplete="email"
+                placeholder="답변받을 이메일 주소"
+                required
+              />
+            </label>
+            <label>
+              문의 유형
+              <select name="topic" defaultValue="제휴 문의">
+                <option>제휴 문의</option>
+                <option>서비스 문의</option>
+                <option>동네 제보</option>
+                <option>기타</option>
+              </select>
+            </label>
+            <label>
+              문의 내용
+              <textarea
+                name="message"
+                rows="4"
+                placeholder="궁금한 점이나 제안하고 싶은 내용을 적어주세요"
+                required
+              />
+            </label>
+            <button className="button button-dark" type="submit">
+              문의 내용 확인하기 <Arrow />
+            </button>
+            {inquiryMessage && (
+              <p className="form-status" role="status">
+                {inquiryMessage}
+              </p>
+            )}
           </form>
         </div>
       </section>
@@ -553,7 +659,8 @@ function HomePage() {
         </div>
         <blockquote>
           “익숙한 길에서
-          <br />새로운 동네를 발견하는 순간.”
+          <br />
+          새로운 동네를 발견하는 순간.”
           <footer>
             <span>
               <b>로컬릿 커뮤니티</b>

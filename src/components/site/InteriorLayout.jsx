@@ -85,9 +85,10 @@ export function PageHeading({ eyebrow, title, lead, number, total = "04" }) {
       </div>
       <div className="interior-container interior-breadcrumb">
         <span>LOCALIT</span>
-        <span>{number} / {total}</span>
+        <span>
+          {number} / {total}
+        </span>
       </div>
     </section>
   );
 }
-

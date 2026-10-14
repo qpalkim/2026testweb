@@ -1,4 +1,8 @@
-import { Arrow, PageFrame, PageHeading } from '../components/site/InteriorLayout.jsx';
+import {
+  Arrow,
+  PageFrame,
+  PageHeading,
+} from "../components/site/InteriorLayout.jsx";
 
 const communityIdeas = [
   {

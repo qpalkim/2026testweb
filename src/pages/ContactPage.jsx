@@ -1,5 +1,9 @@
-import { useState } from 'react';
-import { Arrow, PageFrame, PageHeading } from '../components/site/InteriorLayout.jsx';
+import { useState } from "react";
+import {
+  Arrow,
+  PageFrame,
+  PageHeading,
+} from "../components/site/InteriorLayout.jsx";
 
 export function ContactPage() {
   const [submitted, setSubmitted] = useState(false);

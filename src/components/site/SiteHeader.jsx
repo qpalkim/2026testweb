@@ -53,7 +53,7 @@ export function SiteHeader({ variant = "interior", active }) {
 
       if (event.key === "Tab") {
         const focusableItems = menuPanelRef.current?.querySelectorAll(
-          'a[href], button:not([disabled])',
+          "a[href], button:not([disabled])",
         );
         if (!focusableItems?.length) return;
         const firstItem = focusableItems[0];
@@ -84,8 +84,14 @@ export function SiteHeader({ variant = "interior", active }) {
   };
 
   return (
-    <header className={`unified-header ${isHome ? "unified-header-home page-wrap" : "unified-header-interior"}`}>
-      <a className={isHome ? "brand" : "interior-brand"} href="/" aria-label="로컬릿 홈">
+    <header
+      className={`unified-header ${isHome ? "unified-header-home page-wrap" : "unified-header-interior"}`}
+    >
+      <a
+        className={isHome ? "brand" : "interior-brand"}
+        href="/"
+        aria-label="로컬릿 홈"
+      >
         <BrandMark variant={variant} />
         로컬릿<span className={isHome ? "brand-period" : undefined}>.</span>
       </a>
@@ -99,7 +105,8 @@ export function SiteHeader({ variant = "interior", active }) {
         aria-controls="mobile-site-menu"
         onClick={() => setIsMenuOpen((open) => !open)}
       >
-        <span /><span />
+        <span />
+        <span />
       </button>
 
       <div className="unified-header-desktop">
@@ -125,14 +132,27 @@ export function SiteHeader({ variant = "interior", active }) {
           >
             <div className="mobile-site-menu-heading">
               <span>LOCALIT MENU</span>
-              <button className="mobile-site-menu-close" type="button" onClick={closeMenu} aria-label="메뉴 닫기">
-                <span /><span />
+              <button
+                className="mobile-site-menu-close"
+                type="button"
+                onClick={closeMenu}
+                aria-label="메뉴 닫기"
+              >
+                <span />
+                <span />
               </button>
             </div>
-            <HeaderNavigation variant={variant} active={active} onNavigate={closeMenu} />
-            <div className="mobile-site-menu-account" onClick={(event) => {
-              if (event.target.closest("a, button")) closeMenu();
-            }}>
+            <HeaderNavigation
+              variant={variant}
+              active={active}
+              onNavigate={closeMenu}
+            />
+            <div
+              className="mobile-site-menu-account"
+              onClick={(event) => {
+                if (event.target.closest("a, button")) closeMenu();
+              }}
+            >
               <AccountActions variant={variant} active={active} />
             </div>
           </div>
