@@ -1,16 +1,104 @@
-# React + Vite
+# 🏘️ 로컬릿 (Localit)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+내 주변에서 오늘의 취향에 맞는 장소와 동네 소식을 발견하는 서비스입니다. 이 프로젝트는 React와 Vite로 만든 반응형 웹 애플리케이션입니다.
 
-Currently, two official plugins are available:
+## ✨ 만들어진 이유
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+익숙한 동네에서도 새로운 장소를 발견하고, 멀리 가지 않아도 일상에 맞는 선택을 할 수 있도록 만들었습니다. 로컬릿은 유명한 장소를 나열하는 대신 가까운 동네의 식사·카페·문화 장소를 둘러보는 경험을 제공합니다.
 
-## React Compiler
+현재 화면의 장소명, 거리, 운영 시간, 평점과 지도 핀은 구성 확인을 위한 예시입니다. 실제 장소 검색이나 추천을 제공하는 단계는 아닙니다.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## 🧭 주요 기능
 
-## Expanding the ESLint configuration
+- **주변 장소 탐색:** 식사·카페·문화 카테고리와 키워드로 장소 예시를 필터링합니다.
+- **지도와 위치 확인:** 홈 히어로에 Kakao 지도를 표시합니다. 사용자가 위치 확인을 선택하면 브라우저 위치 권한을 요청하고 지도를 현재 위치로 이동합니다.
+- **최근 공지:** 랜딩 페이지에서 최근 공지사항을 카드로 확인하고 공지 게시판으로 이동할 수 있습니다.
+- **계정 기능:** Supabase Auth로 회원가입, 로그인, 로그아웃을 제공하며 마이페이지에서 프로필 정보를 관리합니다.
+- **역할별 권한:** 일반 사용자와 관리자 역할을 구분합니다. 관리자는 공지사항을 작성·수정·삭제하고 상단 고정 여부를 설정할 수 있습니다.
+- **공지 이미지:** 관리자는 공지 하나에 JPG·PNG·WEBP 이미지를 최대 3개까지 첨부할 수 있습니다. 목록에는 첫 이미지를 썸네일로 보여줍니다.
+- **반응형 화면:** 모바일에서는 좌측 슬라이드 메뉴를 사용하며, 키보드 포커스와 모션 감소 설정을 지원합니다.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## 🪄 사용 방법
+
+| 경로 | 내용 |
+| --- | --- |
+| `/` | 서비스 소개, 주변 장소 예시, 최근 공지 |
+| `/company` | 로컬릿 소개 |
+| `/product` | 카테고리 필터와 장소 검색 예시, 위치 확인 |
+| `/community` | 커뮤니티 주제 안내 |
+| `/contact` | 온라인 문의 양식 시안 |
+| `/notices` | 공지사항 목록과 상세 내용 |
+| `/signup` · `/login` | 회원가입과 로그인 |
+| `/mypage` | 로그인한 사용자의 프로필 관리 |
+
+위치 확인은 홈 또는 제품 페이지에서 위치 사용 기능을 선택한 뒤에만 요청됩니다. 브라우저에서 위치 권한을 허용하면 지도가 해당 좌표로 이동합니다. 위치 정보는 애플리케이션에 저장하지 않습니다.
+
+공지 작성·수정·삭제는 관리자 계정으로 로그인해야 합니다. 관리자 권한은 Supabase Auth의 서버 관리 `app_metadata.role` 값으로 판단하며, 화면에서 역할을 바꾸는 방식으로 부여하지 않습니다.
+
+## 🧱 기술 스택
+
+- **React 19** — 화면과 컴포넌트
+- **Vite** — 개발 서버와 빌드
+- **일반 CSS** — 반응형 레이아웃과 디자인 시스템
+- **Supabase** — Auth, PostgreSQL 데이터베이스, Storage
+- **Kakao 지도 Web API** — 홈 히어로 지도
+- **Zustand** — 향후 공유 상태 관리에 사용할 예정입니다. 현재 컴포넌트 내부 상태는 React 상태로 관리합니다.
+
+## 💻 로컬 개발
+
+### 📋 준비 사항
+
+- Node.js와 npm
+- Supabase 프로젝트 및 브라우저용 publishable key
+- Kakao 지도 JavaScript key
+
+### 📦 설치 및 실행
+
+```bash
+npm install
+```
+
+프로젝트 루트에 `.env` 파일을 만들고 아래 환경변수 이름을 입력합니다.
+
+```dotenv
+VITE_SUPABASE_URL=
+VITE_SUPABASE_PUBLISHABLE_KEY=
+VITE_KAKAOMAP_KEY=
+```
+
+환경변수에 실제 프로젝트의 URL과 키를 넣은 다음 개발 서버를 실행합니다.
+
+```bash
+npm run dev
+```
+
+Vite가 출력하는 로컬 주소(기본값은 `http://localhost:5173`)로 접속합니다. Kakao 지도 키를 사용하려면 Kakao Developers에서 로컬 주소와 배포 도메인을 JavaScript SDK 허용 도메인으로 등록해야 합니다.
+
+### ✅ 확인 명령
+
+```bash
+npm run lint
+npm run build
+npm run preview
+```
+
+`.env`는 Git에서 제외됩니다. `VITE_` 환경변수는 브라우저 코드에 포함되므로 Supabase publishable key와 Kakao JavaScript key만 사용하세요. Supabase service role key나 비밀 키를 프런트엔드 환경변수에 넣지 마세요.
+
+## 🗂️ 프로젝트 구조
+
+```text
+src/
+├── components/site/   # 공통 헤더, 프로필 표시 등
+├── lib/               # Supabase 클라이언트와 역할 처리
+├── pages/             # 독립 페이지 컴포넌트와 스타일
+├── App.jsx            # 경로 분기와 랜딩 페이지
+└── main.jsx           # React 진입점
+supabase/migrations/   # 데이터베이스 및 Storage 마이그레이션
+public/                # 파비콘 등 정적 파일
+```
+
+## 📚 프로젝트 문서
+
+- [요구사항](REQUIREMENTS.md)
+- [디자인 가이드](DESIGN.md)
+- [프로젝트 작업 지침](AGENTS.md)
